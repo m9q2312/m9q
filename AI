@@ -1,0 +1,37 @@
+import requests
+from bs4 import BeautifulSoup
+
+# URL của trang web cần truy vấn
+url = 'https://vietnamnet.vn/an-do-co-the-dat-hang-viet-nam-lam-san-pham-cong-nghe-cho-thi-truong-1-4-ty-dan-2307435.html'
+
+# Gửi yêu cầu GET tới trang web
+response = requests.get(url)
+
+# Kiểm tra xem yêu cầu có thành công không
+if response.status_code == 200:
+    # Phân tích HTML của trang web
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    # In ra một số phần của trang để kiểm tra cấu trúc HTML
+    print(soup.prettify()[:2000])  # In ra 2000 ký tự đầu tiên của HTML để kiểm tra
+
+    # Tìm tiêu đề bài viết
+    title_tag = soup.find('h1')
+    if title_tag:
+        title = title_tag.text.strip()
+    else:
+        title = 'Không tìm thấy tiêu đề'
+
+    # Tìm nội dung bài viết
+    content_tag = soup.find('div', class_='ArticleContent') or soup.find('div', class_='content')
+    if content_tag:
+        content = content_tag.text.strip()
+    else:
+        content = 'Không tìm thấy nội dung'
+
+    # In kết quả
+    print("Tiêu đề:", title)
+    print("Nội dung bài viết:")
+    print(content)
+else:
+    print(f"Không thể truy cập trang web, mã lỗi: {response.status_code}")
